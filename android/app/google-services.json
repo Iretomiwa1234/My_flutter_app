@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "776678621580",
+    "project_id": "myapp-flutter-project-8441e",
+    "storage_bucket": "myapp-flutter-project-8441e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776678621580:android:4618f58fd4c82d98d996a9",
+        "android_client_info": {
+          "package_name": "com.leaningapp.my_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBL0amFCZkjFIyRzulUUVaIv7mYZ0hc4wk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
