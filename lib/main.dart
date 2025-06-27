@@ -1,5 +1,4 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously
-import 'dart:developer' as devtools;
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,6 +20,7 @@ void main() async {
       routes: {
         '/login': (context) => const LoginView(),
         '/register': (context) => const RegisterView(),
+        '/notes': (context) => const NoteView(),
       },
     ),
   );
@@ -47,8 +47,8 @@ class HomePage extends StatelessWidget {
                 return const VerifyEmailView();
               }
             }
-            // return const LoginView();
-            return const NoteView();
+            return const LoginView();
+          // return const NoteView();
           default:
             return const CircularProgressIndicator();
         }
