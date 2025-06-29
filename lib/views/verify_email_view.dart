@@ -1,8 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app/constansts/routes.dart';
+import 'package:my_app/services/auth/auth_exceptions.dart';
+import 'package:my_app/services/auth/auth_service.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({super.key});
@@ -26,16 +27,15 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
           ),
           TextButton(
             onPressed: () async {
-              final user = FirebaseAuth.instance.currentUser;
               try {
-                await user?.sendEmailVerification();
+                await AuthService.firebase().sendEmailVerification();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Verification email sent!')),
                 );
-              } on FirebaseAuthException catch (e) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text('Error: ${e.message}')));
+              } on GenericAuthException catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error: ${e.toString()}')),
+                );
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -48,7 +48,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
           ),
           TextButton(
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
+              await AuthService.firebase().logOut();
               Navigator.of(
                 context,
               ).pushNamedAndRemoveUntil(registerRoute, (route) => false);
