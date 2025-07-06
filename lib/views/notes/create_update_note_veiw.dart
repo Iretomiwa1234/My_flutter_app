@@ -60,35 +60,6 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     }
   }
 
-  // Future<DatabaseNote?> reateOrGetExistingNote() async {
-  //   if (_note != null) {
-  //     return _note;
-  //   }
-
-  //   try {
-  //     final currentUser = AuthService.firebase().currentUser;
-  //     if (currentUser == null) {
-  //       print("❌ No logged-in user");
-  //       return null;
-  //     }
-
-  //     final email = currentUser.email;
-  //     if (email == null) {
-  //       print("❌ Current user has no email");
-  //       return null;
-  //     }
-
-  //     final owner = await _notesService.getUser(email: email);
-  //     final newNote = await _notesService.createNote(owner: owner);
-  //     print("✅ Note created with ID: ${newNote.id}");
-  //     return newNote;
-  //   } catch (e, stack) {
-  //     print("❌ Error creating note: $e");
-  //     print(stack);
-  //     return null;
-  //   }
-  // }
-
   void _deleteIfTextIsEmpty() {
     final note = _note;
     if (_textController.text.isEmpty && note != null) {
@@ -127,23 +98,6 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
               );
-            // case ConnectionState.done:
-            //   final note = snapshot.data;
-            //   if (note == null) {
-            //     return const Center(child: Text("❌ Could not load note"));
-            //   }
-
-            //   _note = note; // ✅ No need to cast
-            //   _setupTextControllerListener();
-
-            //   return TextField(
-            //     controller: _textController,
-            //     keyboardType: TextInputType.multiline,
-            //     maxLines: null,
-            //     decoration: const InputDecoration(
-            //       hintText: 'Start typing here...',
-            //     ),
-            //   );
 
             default:
               return const CircularProgressIndicator();

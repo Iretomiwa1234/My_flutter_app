@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:my_app/extensions/list/filter.dart';
 import 'package:my_app/services/crud/crud_exceptions.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -14,27 +15,46 @@ class NotesService {
 
   List<DatabaseNote> _notes = [];
 
+  DatabaseUser? _user;
+
   static final NotesService _shared = NotesService._sharedInstance();
   NotesService._sharedInstance() {
-    noteStreamController = StreamController<List<DatabaseNote>>.broadcast(
+    _noteStreamController = StreamController<List<DatabaseNote>>.broadcast(
       onListen: () {
-        noteStreamController.sink.add(_notes);
+        _noteStreamController.sink.add(_notes);
       },
     );
   }
 
   factory NotesService() => _shared;
 
-  late final StreamController<List<DatabaseNote>> noteStreamController;
+  late final StreamController<List<DatabaseNote>> _noteStreamController;
 
-  Stream<List<DatabaseNote>> get allNotes => noteStreamController.stream;
+  Stream<List<DatabaseNote>> get allNotes =>
+      _noteStreamController.stream.map((notes) {
+        final currentUser = _user;
+        if (currentUser != null) {
+          return notes.where((note) => note.userId == currentUser.id).toList();
+        } else {
+          throw UserShouldBeSetBeforeReadingAllNotes();
+        }
+      });
 
-  Future<DatabaseUser> getOrCreateUser({required String email}) async {
+  Future<DatabaseUser> getOrCreateUser({
+    required String email,
+    bool setAsCurrentUser = true,
+  }) async {
     try {
       final user = await getUser(email: email);
+      if (setAsCurrentUser) {
+        _user = user;
+      }
       return user;
     } on CouldNotFindUser {
       final createdUser = await createUser(email: email);
+      if (setAsCurrentUser) {
+        _user = createdUser;
+      }
       return createdUser;
     } catch (e) {
       if (e is UserAlreadyExists) {
@@ -48,7 +68,7 @@ class NotesService {
   Future<void> _cacheNotes() async {
     final allNotes = await getAllNotes();
     _notes = allNotes.toList();
-    noteStreamController.add(_notes);
+    _noteStreamController.add(_notes);
   }
 
   Future<DatabaseNote> updateNote({
@@ -73,7 +93,7 @@ class NotesService {
       final updatedNote = await getNote(id: note.id);
       _notes.removeWhere((note) => note.id == updatedNote.id);
       _notes.add(updatedNote);
-      noteStreamController.add(_notes); // Update stream with new data
+      _noteStreamController.add(_notes); // Update stream with new data
       return updatedNote;
     }
   }
@@ -232,7 +252,7 @@ class NotesService {
     );
 
     _notes.add(note);
-    noteStreamController.add(_notes);
+    _noteStreamController.add(_notes);
 
     return note;
   }
@@ -250,7 +270,7 @@ class NotesService {
       throw CouldNotDeleteNote();
     } else {
       _notes.removeWhere((note) => note.id == noteId);
-      noteStreamController.add(_notes);
+      _noteStreamController.add(_notes);
     }
   }
 }
