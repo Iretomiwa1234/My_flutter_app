@@ -48,12 +48,14 @@ class NotesService {
       final user = await getUser(email: email);
       if (setAsCurrentUser) {
         _user = user;
+        await _cacheNotes();
       }
       return user;
     } on CouldNotFindUser {
       final createdUser = await createUser(email: email);
       if (setAsCurrentUser) {
         _user = createdUser;
+        await _cacheNotes();
       }
       return createdUser;
     } catch (e) {
