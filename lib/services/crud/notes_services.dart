@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:my_app/extensions/list/filter.dart';
+// import 'package:my_app/extensions/list/filter.dart';
 import 'package:my_app/services/crud/crud_exceptions.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -107,7 +107,7 @@ class NotesService {
         .map((noteRow) => DatabaseNote.fromRow(noteRow))
         .toList();
     _notes = dbNotes;
-    noteStreamController.add(_notes); // Update stream with new data
+    _noteStreamController.add(_notes); // Update stream with new data
 
     return dbNotes;
   }
@@ -128,7 +128,7 @@ class NotesService {
       final note = DatabaseNote.fromRow(notes.first);
       _notes.removeWhere((note) => note.id == id);
       _notes.add(note);
-      noteStreamController.add(_notes); // Update stream with new data
+      _noteStreamController.add(_notes); // Update stream with new data
       return note;
     }
   }
